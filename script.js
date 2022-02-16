@@ -1,4 +1,5 @@
-let kittens = ["Kitty"]
+let kittens = []
+let targetKitten = ""
 /**
  * Called when submitting the new Kitten Form
  * This method will pull data from the form
@@ -10,15 +11,20 @@ function addKitten(event) {
   event.preventDefault()
   let form = event.target
   let submittedKitten = form.name.value
-  console.log(submittedKitten)
-  if(submittedKitten = kittens.find(kitten => kitten == submittedKitten)){
-    console.log("That Kitten Has Been Submitted Already")
+  let currentKitten = kittens.find(kitten => kitten.name == submittedKitten)
+  console.log(currentKitten)
+  console.log(kittens)
+
+  if(!currentKitten){
+    let pushingKitten = {name : submittedKitten, mood: "Tolerant", affection: 5}
+    kittens.push(pushingKitten)
   }
     else{
-      kittens.push(submittedKitten)
+      console.log("That Kitten Has Been Submitted Already")
   }
-  console.log(kittens)
   form.reset()
+  saveKittens()
+  drawKittens()
 }
 
 
@@ -28,6 +34,7 @@ function addKitten(event) {
  * Saves the string to localstorage at the key kittens 
  */
 function saveKittens() {
+  window.localStorage.setItem("kittens", JSON.stringify(kittens))
 }
 
 /**
@@ -36,12 +43,34 @@ function saveKittens() {
  * the kittens array to the retrieved array
  */
 function loadKittens() {
+  let kittensData = JSON.parse(window.localStorage.getItem("kittens"))
+  if(kittensData){
+    kittens = kittensData
+  }
 }
 
 /**
  * Draw all of the kittens to the kittens element
  */
 function drawKittens() {
+  let template = ``
+  kittens.forEach(kitten => {
+    template += `<div class="card m-1" id = "card-${kitten.name}">
+    <img class = "kitten" src="clipart140253.png" id = "photo-${kitten.name}" alt="picture of cat">
+    <H3 class = "d-flex align-center wrap-text">${kitten.name}</H3>
+    <button class = "btn-dark" onclick=pet("${kitten.name}")>
+      Pet
+    </button>
+    <button onclick=catnip("${kitten.name}")>
+      Catnip
+    </button>
+    <h5>Affection: ${+ kitten.affection} / 10</h5>
+    <h5>Mood : ${kitten.mood}</h5>
+  </div>`
+  })
+  document.getElementById("kittens").innerHTML=template
+
+
 }
 
 
@@ -51,6 +80,10 @@ function drawKittens() {
  * @return {Kitten}
  */
 function findKittenById(id) {
+  loadKittens()
+
+  targetKitten = kittens.find(kitten => kitten.name == id)
+  console.log(targetKitten)
 }
 
 
@@ -63,6 +96,27 @@ function findKittenById(id) {
  * @param {string} id 
  */
 function pet(id) {
+  findKittenById(id)
+  let randNum = Math.random()
+  console.log(randNum)
+  // @ts-ignore
+  if(randNum >= .5 && targetKitten.affection < 10){
+    // @ts-ignore
+    targetKitten.affection += 1
+  }
+    else if(randNum >= .5){
+      // @ts-ignore
+      targetKitten.affection = targetKitten.affection
+    }
+    else{
+      // @ts-ignore
+      targetKitten.affection -= 1
+    }
+  console.log(targetKitten)
+  console.log(kittens)
+  setKittenMood(id)
+  saveKittens()
+  drawKittens()
 }
 
 /**
@@ -72,13 +126,39 @@ function pet(id) {
  * @param {string} id
  */
 function catnip(id) {
+  findKittenById(id)
+  // @ts-ignore
+  targetKitten.affection = 5
+  setKittenMood(id)
+  saveKittens()
+  drawKittens()
 }
 
 /**
  * Sets the kittens mood based on its affection
  * @param {Kitten} kitten 
  */
-function setKittenMood(kitten) {
+function setKittenMood(id) {
+  let targetPhotoReference = "photo-" + id
+  let targetCardReference = "card-" + id
+  let targetPhoto = document.getElementById(targetPhotoReference)
+  let targetCard = document.getElementById(targetCardReference)
+  if(targetKitten.affection >= 7){
+    targetKitten.mood = "Happy!"
+    targetPhoto.classList.add("happy")
+    console.log(targetPhoto)
+  }
+    else if(targetKitten.affection >= 5){
+      targetKitten.mood = "Tolerant"
+    }
+    else if(targetKitten.affection >= 3){
+      targetKitten.mood = "Unhappy"
+    }
+    else if (targetKitten.affection == 0){
+      targetKitten.mood = "Gone"
+    }
+  drawKittens()
+
 }
 
 /**
@@ -86,6 +166,9 @@ function setKittenMood(kitten) {
  * remember to save this change
  */
 function clearKittens(){
+  kittens = []
+  drawKittens()
+  saveKittens()
 }
 
 /**
@@ -93,8 +176,9 @@ function clearKittens(){
  * list of kittens to the page. Good Luck
  */
 function getStarted() {
-  document.getElementById("welcome").remove();
-  console.log('Good Luck, Take it away')
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("kittens").classList.remove("hidden")
+  drawKittens()
 }
 
 

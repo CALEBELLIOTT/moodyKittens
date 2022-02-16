@@ -121,6 +121,8 @@ button.btn-special:hover{
   padding: 1em;
   box-shadow: var(--shadow);
   border-radius: var(--corners);
+  height: 30%;
+  width: 25%;
 }
 
 .shadow{
@@ -128,9 +130,10 @@ button.btn-special:hover{
 }
 
 
-.kitten img{
+.kitten{
   filter: drop-shadow(2px 4px 6px #1b1b1b);
   transition: all .35s ease;
+
 }
 .kitten.happy img{
   filter: drop-shadow(2px 4px 6px #00ffb3);
