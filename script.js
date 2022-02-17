@@ -16,7 +16,7 @@ function addKitten(event) {
   console.log(kittens)
 
   if(!currentKitten){
-    let pushingKitten = {name : submittedKitten, mood: "Tolerant", affection: 5}
+    let pushingKitten = {name : submittedKitten, mood: "tolerant", affection: 5}
     kittens.push(pushingKitten)
   }
     else{
@@ -56,12 +56,12 @@ function drawKittens() {
   let template = ``
   kittens.forEach(kitten => {
     template += `<div class="card m-1" id = "card-${kitten.name}">
-    <img class = "kitten" src="clipart140253.png" id = "photo-${kitten.name}" alt="picture of cat">
+    <img class = "kitten ${kitten.mood}" src="clipart140253.png" id = "photo-${kitten.name}" alt="picture of cat">
     <H3 class = "d-flex align-center wrap-text">${kitten.name}</H3>
-    <button class = "btn-dark" onclick=pet("${kitten.name}")>
+    <button class = "btn-dark btn-${kitten.mood}" onclick=pet("${kitten.name}")>
       Pet
     </button>
-    <button onclick=catnip("${kitten.name}")>
+    <button class = btn-${kitten.mood} id = "btn-catnip-${kitten.name}" onclick=catnip("${kitten.name}")>
       Catnip
     </button>
     <h5>Affection: ${+ kitten.affection} / 10</h5>
@@ -139,23 +139,17 @@ function catnip(id) {
  * @param {Kitten} kitten 
  */
 function setKittenMood(id) {
-  let targetPhotoReference = "photo-" + id
-  let targetCardReference = "card-" + id
-  let targetPhoto = document.getElementById(targetPhotoReference)
-  let targetCard = document.getElementById(targetCardReference)
   if(targetKitten.affection >= 7){
-    targetKitten.mood = "Happy!"
-    targetPhoto.classList.add("happy")
-    console.log(targetPhoto)
+    targetKitten.mood = "happy"
   }
     else if(targetKitten.affection >= 5){
-      targetKitten.mood = "Tolerant"
+      targetKitten.mood = "tolerant"
     }
     else if(targetKitten.affection >= 3){
-      targetKitten.mood = "Unhappy"
+      targetKitten.mood = "angry"
     }
     else if (targetKitten.affection == 0){
-      targetKitten.mood = "Gone"
+      targetKitten.mood = "gone"
     }
   drawKittens()
 
