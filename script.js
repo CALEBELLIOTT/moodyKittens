@@ -11,16 +11,16 @@ function addKitten(event) {
   event.preventDefault()
   let form = event.target
   let submittedKitten = form.name.value
-  let currentKitten = kittens.find(kitten => kitten.name == submittedKitten)
+  let currentKitten = kittens.find(xyz => xyz.name == submittedKitten)
   console.log(currentKitten)
   console.log(kittens)
 
-  if(!currentKitten){
-    let pushingKitten = {name : submittedKitten, mood: "tolerant", affection: 5}
+  if (!currentKitten) {
+    let pushingKitten = { name: submittedKitten, mood: "tolerant", affection: 5, id: generateId() }
     kittens.push(pushingKitten)
   }
-    else{
-      console.log("That Kitten Has Been Submitted Already")
+  else {
+    console.log("That Kitten Has Been Submitted Already")
   }
   form.reset()
   saveKittens()
@@ -44,7 +44,7 @@ function saveKittens() {
  */
 function loadKittens() {
   let kittensData = JSON.parse(window.localStorage.getItem("kittens"))
-  if(kittensData){
+  if (kittensData) {
     kittens = kittensData
   }
 }
@@ -55,20 +55,20 @@ function loadKittens() {
 function drawKittens() {
   let template = ``
   kittens.forEach(kitten => {
-    template += `<div class="card m-1" id = "card-${kitten.name}">
-    <img class = "kitten ${kitten.mood}" src="clipart140253.png" id = "photo-${kitten.name}" alt="picture of cat">
+    template += `<div class="card m-1" id = "card-${kitten.id}">
+    <img class = "kitten ${kitten.mood}" src="clipart140253.png" id = "photo-${kitten.id}" alt="picture of cat">
     <H3 class = "d-flex align-center wrap-text">${kitten.name}</H3>
-    <button class = "btn-dark btn-${kitten.mood}" onclick=pet("${kitten.name}")>
+    <button class = "btn-dark btn-${kitten.mood}" onclick=pet("${kitten.id}")>
       Pet
     </button>
-    <button class = btn-${kitten.mood} id = "btn-catnip-${kitten.name}" onclick=catnip("${kitten.name}")>
+    <button class = btn-${kitten.mood} id = "btn-catnip-${kitten.id}" onclick=catnip("${kitten.id}")>
       Catnip
     </button>
     <h5>Affection: ${+ kitten.affection} / 10</h5>
     <h5>Mood : ${kitten.mood}</h5>
   </div>`
   })
-  document.getElementById("kittens").innerHTML=template
+  document.getElementById("kittens").innerHTML = template
 
 
 }
@@ -82,7 +82,7 @@ function drawKittens() {
 function findKittenById(id) {
   loadKittens()
 
-  targetKitten = kittens.find(kitten => kitten.name == id)
+  targetKitten = kittens.find(kitten => kitten.id == id)
   console.log(targetKitten)
 }
 
@@ -98,20 +98,19 @@ function findKittenById(id) {
 function pet(id) {
   findKittenById(id)
   let randNum = Math.random()
-  console.log(randNum)
   // @ts-ignore
-  if(randNum >= .5 && targetKitten.affection < 10){
+  if (randNum >= .5 && targetKitten.affection < 10) {
     // @ts-ignore
     targetKitten.affection += 1
   }
-    else if(randNum >= .5){
-      // @ts-ignore
-      targetKitten.affection = targetKitten.affection
-    }
-    else{
-      // @ts-ignore
-      targetKitten.affection -= 1
-    }
+  else if (randNum >= .5) {
+    // @ts-ignore
+    targetKitten.affection = targetKitten.affection
+  }
+  else {
+    // @ts-ignore
+    targetKitten.affection -= 1
+  }
   console.log(targetKitten)
   console.log(kittens)
   setKittenMood(id)
@@ -139,18 +138,18 @@ function catnip(id) {
  * @param {Kitten} kitten 
  */
 function setKittenMood(id) {
-  if(targetKitten.affection >= 7){
+  if (targetKitten.affection >= 7) {
     targetKitten.mood = "happy"
   }
-    else if(targetKitten.affection >= 5){
-      targetKitten.mood = "tolerant"
-    }
-    else if(targetKitten.affection >= 3){
-      targetKitten.mood = "angry"
-    }
-    else if (targetKitten.affection == 0){
-      targetKitten.mood = "gone"
-    }
+  else if (targetKitten.affection >= 5) {
+    targetKitten.mood = "tolerant"
+  }
+  else if (targetKitten.affection >= 3) {
+    targetKitten.mood = "angry"
+  }
+  else if (targetKitten.affection == 0) {
+    targetKitten.mood = "gone"
+  }
   drawKittens()
 
 }
@@ -159,7 +158,7 @@ function setKittenMood(id) {
  * Removes all of the kittens from the array
  * remember to save this change
  */
-function clearKittens(){
+function clearKittens() {
   kittens = []
   drawKittens()
   saveKittens()
@@ -194,3 +193,4 @@ function generateId() {
 }
 
 loadKittens();
+console.log(kittens);
